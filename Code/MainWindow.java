@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainWindow extends Application {
@@ -21,7 +20,7 @@ public class MainWindow extends Application {
         Label titleLabel = new Label("Welcome to GamePlan!");
         titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
 
-        VBox topSection = new VBox(titleLabel); 
+        VBox topSection = new VBox(titleLabel);
         topSection.setAlignment(Pos.CENTER);
         topSection.setPadding(new Insets(20));
         root.setTop(topSection);
@@ -32,48 +31,27 @@ public class MainWindow extends Application {
         centerSection.setAlignment(Pos.CENTER);
         root.setCenter(centerSection);
 
-        // Buttons (edit and delete functionality will be added later)
+        // Buttons (functionality will be added later)
         Button addButton = new Button("Add Task");
         Button editButton = new Button("Edit Task");
         Button deleteButton = new Button("Delete Task");
 
-        // Button action when clicked
-        addButton.setOnAction(e -> openAddTaskDialog(stage));
-
         HBox buttonPanel = new HBox(10, addButton, deleteButton, editButton);
         buttonPanel.setAlignment(Pos.CENTER_LEFT);
-        buttonPanel.setPadding(new Insets(10));
-        
-        topSection.getChildren().add(buttonPanel);
+        buttonPanel.setPadding(new Insets(0, 10, 0, 10)); //edited padding to align buttons order is (top, right, bot, left)
 
-        // Sort button, level, and EXP display
-        SortLevelExp sortLevelExp = new SortLevelExp();
-        sortLevelExp.setAlignment(Pos.CENTER_LEFT);
-        sortLevelExp.setPadding(new Insets(10));
-        topSection.getChildren().add(sortLevelExp);
+        //topSection.getChildren().add(buttonPanel); replacing this to align the buttons at top and align SortLevelExp
+        BorderPane Menu = new BorderPane(); //make top menu
+
+        Menu.setLeft(buttonPanel);
+        Menu.setRight(new SortLevelExp());
+        topSection.getChildren().add(0, Menu);
 
         // Display window
         Scene scene = new Scene(root, 800, 500);
         stage.setTitle("GamePlan - Task Manager");
         stage.setScene(scene);
         stage.show();
-    }
-
-    private void openAddTaskDialog(Stage owner) {
-        Stage addTaskDialog = new Stage();
-        addTaskDialog.initOwner(owner);
-        addTaskDialog.initModality(Modality.WINDOW_MODAL);
-        addTaskDialog.setTitle("Add New Task");
-
-        BorderPane dialogRoot = new BorderPane();
-
-        Label titleLabel = new Label("Add New Task");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-        BorderPane.setAlignment(titleLabel, Pos.CENTER);
-        dialogRoot.setTop(titleLabel);
-
-        addTaskDialog.setScene(new Scene(dialogRoot, 400, 350));
-        addTaskDialog.showAndWait();
     }
 
     public static void main(String[] args) {
