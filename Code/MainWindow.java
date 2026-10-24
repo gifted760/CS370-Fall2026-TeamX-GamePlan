@@ -1,59 +1,82 @@
-import javax.swing.*;
-import java.awt.*;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends Application {
 
-  public MainWindow() {
-      // Set up the main window
-      setTitle("GamePlan - Task Manager");
-      setSize(800, 500);
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      setLocationRelativeTo(null);
+    @Override
+    public void start(Stage stage) {
+        // Main window layout
+        BorderPane root = new BorderPane();
 
-      // Main Layout
-      setLayout(new BorderLayout());
+        // Title
+        Label titleLabel = new Label("Welcome to GamePlan!");
+        titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
 
-      // Title at the top
-      JLabel titleLabel = new JLabel(
-          "Welcome to GamePlan!",
-          SwingConstants.CENTER
-      );
-      titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
+        VBox topSection = new VBox(titleLabel); 
+        topSection.setAlignment(Pos.CENTER);
+        topSection.setPadding(new Insets(20));
+        root.setTop(topSection);
 
-      add(titleLabel, BorderLayout.NORTH);
+        // Placeholder task list
+        Label taskLabel = new Label("Your tasks will appear here.");
+        VBox centerSection = new VBox(taskLabel);
+        centerSection.setAlignment(Pos.CENTER);
+        root.setCenter(centerSection);
 
-      // Area where tasks will appear
-      JPanel taskPanel = new JPanel(new BorderLayout());
-      taskPanel.setBorder(
-          BorderFactory.createTitledBorder("Your Tasks")
-      );
+        // Buttons (edit and delete functionality will be added later)
+        Button addButton = new Button("Add Task");
+        Button editButton = new Button("Edit Task");
+        Button deleteButton = new Button("Delete Task");
 
-      JLabel emptyLabel = new JLabel(
-          "No tasks added yet.",
-           SwingConstants.CENTER
-      );
+        // Button action when clicked
+        addButton.setOnAction(e -> openAddTaskDialog(stage));
 
-      taskPanel.add(emptyLabel, BorderLayout.CENTER);
-      add(taskPanel, BorderLayout.CENTER);
+        HBox buttonPanel = new HBox(10, addButton, deleteButton, editButton);
+        buttonPanel.setAlignment(Pos.CENTER_LEFT);
+        buttonPanel.setPadding(new Insets(10));
+        
+        topSection.getChildren().add(buttonPanel);
 
-      // Buttons for future task fuctionality
-      JPanel buttonPanel = new JPanel();
+        // Sort button, level, and EXP display
+        SortLevelExp sortLevelExp = new SortLevelExp();
+        sortLevelExp.setAlignment(Pos.CENTER_LEFT);
+        sortLevelExp.setPadding(new Insets(10));
+        topSection.getChildren().add(sortLevelExp);
 
-      JButton addButton = new JButton("Add Task");
-      JButton editButton = new JButton("Edit Task");
-      JButton deleteButton = new JButton("Delete Task");
+        // Display window
+        Scene scene = new Scene(root, 800, 500);
+        stage.setTitle("GamePlan - Task Manager");
+        stage.setScene(scene);
+        stage.show();
+    }
 
-      buttonPanel.add(addButton);
-      buttonPanel.add(editButton);
-      buttonPanel.add(deleteButton);
+    private void openAddTaskDialog(Stage owner) {
+        Stage addTaskDialog = new Stage();
+        addTaskDialog.initOwner(owner);
+        addTaskDialog.initModality(Modality.WINDOW_MODAL);
+        addTaskDialog.setTitle("Add New Task");
 
-      add(buttonPanel, BorderLayout.SOUTH);
-  }
+        BorderPane dialogRoot = new BorderPane();
 
-  public static void main(String[] args) {
-      SwingUtilities.invokeLater(()-> {
-          MainWindow window = new MainWindow();
-          window.setVisible(true);
-      });
-  }
+        Label titleLabel = new Label("Add New Task");
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        BorderPane.setAlignment(titleLabel, Pos.CENTER);
+        dialogRoot.setTop(titleLabel);
+
+        addTaskDialog.setScene(new Scene(dialogRoot, 400, 350));
+        addTaskDialog.showAndWait();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
