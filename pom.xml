@@ -21,6 +21,11 @@
             <artifactId>javafx-controls</artifactId>
             <version>25.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.calendarfx</groupId>
+            <artifactId>view</artifactId>
+            <version>12.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>

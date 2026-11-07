@@ -18,24 +18,38 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javafx.application.Application;
 
 public class MainWindow extends Application {
 
-    private static class Task{
+    static class Task{
         private final String name;
         private final LocalDate dueDate;
         private final int points;
 
-    Task(String taskName, LocalDate taskDate, int taskPoints){
-        name = taskName;
-        dueDate = taskDate;
-        points = taskPoints;
-    }
+        Task(String taskName, LocalDate taskDate, int taskPoints){
+            name = taskName;
+            dueDate = taskDate;
+            points = taskPoints;
+        }
 
-    @Override
+
+        public String getName() {
+            return name;
+        }
+
+        public LocalDate getDueDate() {
+            return dueDate;
+        }
+
+        public int getPoints() {
+            return points;
+        }
+
+        @Override
         public String toString(){
-        return name + " | Due: " + dueDate + " | Points: " + points;
-    }
+            return name + " | Due: " + dueDate + " | Points: " + points;
+        }
     }
     @Override
     public void start(Stage stage) {
@@ -85,8 +99,8 @@ public class MainWindow extends Application {
                     setGraphic(row);
                 }
             }
-        });        
-        
+        });
+
         VBox centerSection = new VBox(taskList);
         centerSection.setAlignment(Pos.CENTER);
         VBox.setVgrow(taskList, Priority.ALWAYS);
@@ -97,6 +111,7 @@ public class MainWindow extends Application {
         Button editButton = new Button("Edit Task");
         Button deleteButton = new Button("Delete Task");
         Button settingsButton = new Button("Settings");
+        Button calendarButton = new Button("Calendar");
 
         addButton.setOnAction(event -> {
             //new window to add task
@@ -173,8 +188,8 @@ public class MainWindow extends Application {
 
             if (selectedTask == null) {
                 Alert alert = new Alert(
-                    Alert.AlertType.WARNING,
-                    "Please select a task to edit!"
+                        Alert.AlertType.WARNING,
+                        "Please select a task to edit!"
                 );
                 alert.showAndWait();
                 return;
@@ -188,11 +203,11 @@ public class MainWindow extends Application {
 
             // Fields to edit the selected task
             TextField editNameField = new
-            TextField(selectedTask.name);
+                    TextField(selectedTask.name);
             DatePicker editDueDateField = new
-            DatePicker(selectedTask.dueDate);
+                    DatePicker(selectedTask.dueDate);
             TextField editPointsField = new
-            TextField(String.valueOf(selectedTask.points));
+                    TextField(String.valueOf(selectedTask.points));
 
             // Arrange the edit fields
             GridPane editFields = new GridPane();
@@ -220,13 +235,13 @@ public class MainWindow extends Application {
                     newPoints = Integer.parseInt(editPointsField.getText().trim());
                 } catch (NumberFormatException ex) {
                     newPoints = -1;
-                }   
+                }
 
                 // Check for invalid input
                 if (newName.isEmpty() || newDate == null || newPoints < 0) {
                     Alert alert = new Alert(
-                        Alert.AlertType.WARNING,
-                        "Please enter a task name, due date, and valid points."
+                            Alert.AlertType.WARNING,
+                            "Please enter a task name, due date, and valid points."
                     );
                     alert.showAndWait();
                     return;
@@ -252,7 +267,7 @@ public class MainWindow extends Application {
             editTaskWindow.setScene(editScene);
             editTaskWindow.show();
 
-             }); // End of Edit Task fuctionality
+        }); // End of Edit Task fuctionality
 
         // Delete Task functionality
         deleteButton.setOnAction(event -> {
@@ -269,8 +284,33 @@ public class MainWindow extends Application {
             taskList.getItems().remove(selectedTask);
         });
 
+// Create the calendar window
+        Stage calendarWindow = new Stage();
+        calendarWindow.setTitle("GamePlan - Calendar");
+        calendarWindow.initOwner(stage);
 
-        HBox buttonPanel = new HBox(10, addButton, deleteButton, editButton, settingsButton);
+// Connect calendar to our existing task list
+        TaskCalendar taskCalendar = new TaskCalendar(taskList.getItems());
+
+// Create the calendar scene
+        Scene calendarScene = new Scene(taskCalendar, 1000, 700);
+        calendarWindow.setScene(calendarScene);
+
+// Open the calendar when the button is clicked
+        calendarButton.setOnAction(e -> {
+            calendarWindow.show();
+            calendarWindow.toFront();
+        });
+
+
+        HBox buttonPanel = new HBox(
+                10,
+                addButton,
+                deleteButton,
+                editButton,
+                settingsButton,
+                calendarButton
+        );
         buttonPanel.setAlignment(Pos.CENTER_LEFT);
         buttonPanel.setPadding(new Insets(0, 10, 0, 10)); //edited padding to align buttons order is (top, right, bot, left)
 
