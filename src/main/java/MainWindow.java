@@ -96,6 +96,8 @@ public class MainWindow extends Application {
         // Main window layout
         BorderPane root = new BorderPane();
 
+        root.getStyleClass().add("gameplan-dashboard");
+
         // Title
         Label titleLabel = new Label("Welcome to GamePlan!");
         titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
@@ -463,6 +465,12 @@ public class MainWindow extends Application {
 
         // Display window
         Scene scene = new Scene(root, 800, 500);
+
+        // Apply modern GamePlan styling
+        scene.getStylesheets().add(
+            getClass().getResource("style.css").toExternalForm()
+        );
+
         scene.getAccelerators().put(
                 new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN),
                 () -> undo(taskList));
