@@ -431,8 +431,20 @@ public class MainWindow extends Application {
                 return;
             }
 
+            // Ask the user to confirm before deleting the task
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to delete the task?",
+                    ButtonType.YES, ButtonType.NO);
+            confirm.setTitle("Delete Task");
+            confirm.setHeaderText(null);
+            boolean confirmed = confirm.showAndWait()
+                    .filter(response -> response == ButtonType.YES)
+                    .isPresent();
+
             // Remove task from home page (can be undone)
-            removeTask(taskList, selectedTask, "Delete");
+            if (confirmed) {
+                removeTask(taskList, selectedTask, "Delete");
+            }
         });
 
 // Create the calendar window
