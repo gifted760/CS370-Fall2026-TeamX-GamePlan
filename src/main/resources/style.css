@@ -1,0 +1,77 @@
+/* GamePlan Modern GUI */
+
+/* Main application background */
+.root {
+    -fx-background-color: #F4F7FC;
+    -fx-font-family: "Arial";
+}
+
+/* Spacing inside the main dashboard */
+.gameplan-dashboard {
+    -fx-padding: 15px;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #243B63;
+}
+
+/* Modern buttons */
+.button {
+    -fx-background-color: #315A96;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 18px;
+    -fx-cursor: hand;
+}
+
+/* Button hover effect */
+.button:hover {
+    -fx-background-color: #4478BD;
+}
+
+/* Disabled buttons */
+.button:disabled {
+    -fx-opacity: 0.5;
+}
+
+/* Task table */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #DCE4F0;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+/* Table column headers */
+.table-view .column-header {
+    -fx-background-color: #E5ECF7;
+    -fx-padding: 12px;
+}
+
+/* Task rows */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-cell-size: 44px;
+}
+
+/* Alternating row colors */
+.table-row-cell:odd {
+    -fx-background-color: #F5F8FD;
+}
+
+/* Selected task */
+.table-row-cell:selected {
+    -fx-background-color: #DCE9FC;
+}
+
+/* Input fields */
+.text-field,
+.text-area,
+.date-picker {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #DCE4F0;
+}
