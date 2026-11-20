@@ -484,7 +484,7 @@ public class MainWindow extends Application {
         topSection.getChildren().add(menu); // below the title
 
         // Display window
-        Scene scene = new Scene(root, 800, 500);
+        Scene scene = new Scene(root, 1250, 750);
 
         // Apply modern GamePlan styling
         scene.getStylesheets().add(
