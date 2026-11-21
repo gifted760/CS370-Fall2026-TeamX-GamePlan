@@ -37,6 +37,7 @@ import java.util.Deque;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ProgressBar;
 
 
 public class MainWindow extends Application {
@@ -97,6 +98,10 @@ public class MainWindow extends Application {
             return name + " | Due: " + dueDate + " | Points: " + points;
         }
     }
+    private final ExpSystem expSystem = new ExpSystem();
+    private final SortLevelExp levelExp = new SortLevelExp(expSystem);
+    private final Label expLabel = new Label();
+    private final ProgressBar expBar = new ProgressBar(0);
     @Override
     public void start(Stage stage) {
         // Main window layout
@@ -481,17 +486,19 @@ public class MainWindow extends Application {
 
         // Level/EXP on the left, other buttons on the right
         BorderPane sideItems = new BorderPane();
-        SortLevelExp levelExp = new SortLevelExp();
-        levelExp.setAlignment(Pos.CENTER_LEFT);
+        levelExp.setAlignment(Pos.TOP_LEFT);
         sideItems.setLeft(levelExp);
         sideItems.setRight(otherButtons);
-        BorderPane.setAlignment(levelExp, Pos.CENTER_LEFT);
-        BorderPane.setAlignment(otherButtons, Pos.CENTER_RIGHT);
+        BorderPane.setAlignment(levelExp, Pos.TOP_LEFT);
+        BorderPane.setAlignment(otherButtons, Pos.TOP_RIGHT);
         sideItems.setPickOnBounds(false); // let clicks in its empty middle reach the task buttons
 
         // Stack the centered task buttons over the side items so the buttons are centered
         // on the whole window, not just on the space between the side items
         StackPane menu = new StackPane(sideItems, taskButtons);
+        taskButtons.setMaxHeight(Region.USE_PREF_SIZE);
+        otherButtons.setMaxHeight(Region.USE_PREF_SIZE);
+        StackPane.setAlignment(taskButtons, Pos.TOP_CENTER);
         menu.setPadding(new Insets(0, 10, 0, 10)); // order is (top, right, bottom, left)
         topSection.getChildren().add(menu); // below the title
 
@@ -500,7 +507,7 @@ public class MainWindow extends Application {
 
         // Apply modern GamePlan styling
         scene.getStylesheets().add(
-            getClass().getResource("style.css").toExternalForm()
+                getClass().getResource("style.css").toExternalForm()
         );
 
         scene.getAccelerators().put(
@@ -510,6 +517,7 @@ public class MainWindow extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
 
     // Label column never shrinks (so labels don't turn into "..."); field column fills the rest
     private static void setupFormColumns(GridPane grid) {
@@ -528,7 +536,25 @@ public class MainWindow extends Application {
         undoStack.push(new RemovedTask(task, index, action));
         // Only completed tasks go into the completed table
         if (action.equals("Complete")) {
+            int previousLevel = expSystem.getLevel();
+
             completedTasks.add(task);
+            expSystem.earnExp(task.getPoints());
+            // Debugging
+            System.out.println("EXP earned: " + task.getPoints());
+            System.out.println("Total EXP: " + expSystem.getTotalExp());
+            System.out.println("Current level: " + expSystem.getLevel());
+
+            updateExpDisplay();
+
+            if (expSystem.getLevel() > previousLevel) {
+                Alert levelUp = new Alert(Alert.AlertType.INFORMATION,
+                        "Level Up! You reached level " + expSystem.getLevel() + "!");
+
+                levelUp.setTitle("Level Up!");
+                levelUp.setHeaderText(null);
+                levelUp.showAndWait();
+            }
         }
         taskList.getItems().remove(index);
         updateUndoButton();
@@ -555,7 +581,9 @@ public class MainWindow extends Application {
         undoButton.setDisable(last == null);
         undoButton.setText(last == null ? "Undo" : "Undo");
     }
-
+    private void updateExpDisplay(){
+        levelExp.updateDisplay();
+    }
     public static void main(String[] args) {
         launch(args);
     }
