@@ -561,11 +561,16 @@ public class MainWindow extends Application {
     }
 
     // Put the most recently removed task back where it was
-    private void undo(TableView<Task> taskList) {
+     private void undo(TableView<Task> taskList) {
         RemovedTask last = undoStack.poll();
         if (last == null) return;
         if (last.action().equals("Complete")) {
             completedTasks.remove(last.task());
+            //remove exp earned from completed tasks
+            expSystem.removeExp(last.task().getPoints());
+
+            //update level, exp, and progress bar
+            updateExpDisplay();
         }
         // Clamp in case the list got shorter since the removal
         int index = Math.min(last.index(), taskList.getItems().size());
